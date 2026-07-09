@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEV Token | The Developer Component Ecosystem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --accent-color: #58a6ff;
+            --neon-glow: #00f0ff;
+            --text-main: #c9d1d9;
+            --text-bright: #ffffff;
+            --border-color: #30363d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+
+        /* Header / Navbar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text-bright);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--neon-glow);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--neon-glow);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px;
+            min-height: 80vh;
+            background: radial-gradient(circle at center, #1f293d 0%, var(--bg-color) 70%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-bright);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(45deg, var(--accent-color), var(--neon-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-bottom: 40px;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--neon-glow);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px var(--neon-glow);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-bright);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-bright);
+        }
+
+        /* Utility/Library Section */
+        .utility {
+            padding: 80px 8%;
+            background-color: rgba(22, 27, 34, 0.5);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--text-bright);
+            margin-bottom: 50px;
+        }
+
+        .utility-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .utility-container { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+
+        .preview-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--neon-glow);
+            color: var(--neon-glow);
+        }
+
+        pre {
+            background-color: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            color: #ff79c6;
+        }
+        .code-tag { color: #ff79c6; }
+        .code-attr { color: #50fa7b; }
+        .code-val { color: #f1fa8c; }
+
+        /* Tokenomics Section */
+        .tokenomics {
+            padding: 80px 8%;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent-color);
+        }
+
+        .stat-card h3 {
+            font-size: 1.1rem;
+            color: #8b949e;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-bright);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            &lt;/&gt; <span>DEV Token</span>
+        </div>
+        <nav>
+            <a href="#about">About</a>
+            <a href="#library">Library</a>
+            <a href="#tokenomics">Tokenomics</a>
+            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank" class="copy-btn" style="border-color: var(--neon-glow); color: var(--neon-glow); padding: 8px 15px;">Buy $DEV</a>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Building the Future <br><span>One Component at a Time</span></h1>
+        <p>The utility token engineered for developers and crypto holders. Fueling a next-generation open-source library of ready-to-use HTML, CSS, and JS snippets to launch your projects instantly.</p>
+        <div class="btn-container">
+            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank" class="btn btn-primary">Buy on Memecoin Platform</a>
+            <a href="#library" class="btn btn-secondary">Explore Library</a>
+        </div>
+    </section>
+
+    <!-- Utility / Library Section -->
+    <section class="utility" id="library">
+        <h2 class="section-title">The Blueprint Utility</h2>
+        <div class="utility-container">
+            <div>
+                <h3 style="color: var(--text-bright); font-size: 1.8rem; margin-bottom: 15px;">Like Bootstrap, But Faster.</h3>
+                <p style="margin-bottom: 20px;">No heavy frameworks or complicated installations. $DEV token powers a completely open marketplace and repository of drop-in UI structures.</p>
+                <p>Just find your element, click copy, and paste it directly into your project file. Pure HTML, custom optimized CSS, and native modern JavaScript.</p>
+            </div>
+            
+            <!-- Interactive Live Code Component Box -->
+            <div class="preview-box">
+                <div class="code-header">
+                    <span>Component Preview: NeonButton.html</span>
+                    <button class="copy-btn" id="copyBtn" onclick="copySnippet()">Copy Code</button>
+                </div>
+                <pre><code><span class="code-tag">&lt;button</span> <span class="code-attr">class</span>=<span class="code-val">"dev-btn"</span><span class="code-tag">&gt;</span>
+  Click Me
+<span class="code-tag">&lt;/button&gt;</span>
+
+<span class="code-tag">&lt;style&gt;</span>
+  <span class="code-attr">.dev-btn</span> {
+    <span class="code-attr">background</span>: #00f0ff;
+    <span class="code-attr">box-shadow</span>: 0 0 10px #00f0ff;
+  }
+<span class="code-tag">&lt;/style&gt;</span></code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tokenomics Section -->
+    <section class="tokenomics" id="tokenomics">
+        <h2 class="section-title">Tokenomics</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Supply</h3>
+                <p>1,000,000,000</p>
+                <span style="color: var(--accent-color); font-size: 0.9rem;">1 Billion Fixed DEV</span>
+            </div>
+            <div class="stat-card">
+                <h3>Target Audience</h3>
+                <p>Devs & Holders</p>
+                <span style="color: var(--accent-color); font-size: 0.9rem;">Shared Ecosystem growth</span>
+            </div>
+            <div class="stat-card">
+                <h3>Core Purpose</h3>
+                <p>UI Component Utility</p>
+                <span style="color: var(--accent-color); font-size: 0.9rem;">No bloat, pure code snippets</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 DEV Token. Built for the creators of tomorrow. Official website asset repository.</p>
+    </footer>
+
+    <!-- JavaScript logic -->
+    <script>
+        function copySnippet() {
+            const codeText = `<button class="dev-btn">\n  Click Me\n</button>\n\n<style>\n  .dev-btn {\n    background: #00f0ff;\n    box-shadow: 0 0 10px #00f0ff;\n  }\n</style>`;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerText = 'Copied!';
+                btn.style.borderColor = '#50fa7b';
+                btn.style.color = '#50fa7b';
+                
+                setTimeout(() => {
+                    btn.innerText = 'Copy Code';
+                    btn.style.borderColor = 'var(--border-color)';
+                    btn.style.color = 'var(--text-main)';
+                }, 2000);
+            }).catch(err => {
+                console.error('Error copying text: ', err);
+            });
+        }
+    </script>
+</body>
+</html>
