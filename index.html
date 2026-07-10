@@ -1,366 +1,936 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DEV Token | The Developer Component Ecosystem</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --accent-color: #58a6ff;
-            --neon-glow: #00f0ff;
-            --text-main: #c9d1d9;
-            --text-bright: #ffffff;
-            --border-color: #30363d;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #111118;
+            --bg-card: #16161f;
+            --cyan: #00f0ff;
+            --cyan-glow: rgba(0, 240, 255, 0.15);
+            --purple: #7c3aed;
+            --text-primary: #f1f1f7;
+            --text-secondary: #9494a8;
+            --text-muted: #5c5c72;
+            --border: #1e1e2a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        code, pre {
-            font-family: 'Fira Code', monospace;
+        /* Background Gradient Effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 20% 50%, var(--cyan-glow) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
         }
 
-        /* Header / Navbar */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 8%;
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
+        /* ===== NAVBAR ===== */
+        nav {
+            position: fixed;
             top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--text-bright);
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 64px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
         }
 
-        .logo span {
-            color: var(--neon-glow);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-        }
-
-        nav a {
-            color: var(--text-main);
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--text-primary);
             text-decoration: none;
-            margin-left: 20px;
-            font-weight: 600;
-            transition: color 0.3s;
         }
 
-        nav a:hover {
-            color: var(--neon-glow);
+        .nav-logo span {
+            color: var(--cyan);
         }
 
-        /* Hero Section */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-buy-btn {
+            background: linear-gradient(135deg, var(--cyan), #00b8c8);
+            color: #0a0a0f !important;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700 !important;
+            font-size: 0.85rem !important;
+            transition: all 0.3s !important;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
+        }
+
+        .nav-buy-btn:hover {
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.45) !important;
+            transform: translateY(-1px);
+            color: #0a0a0f !important;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* ===== HERO ===== */
         .hero {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 100px 20px;
-            min-height: 80vh;
-            background: radial-gradient(circle at center, #1f293d 0%, var(--bg-color) 70%);
+            padding: 6rem 2rem 4rem;
+            position: relative;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            color: var(--cyan);
+            padding: 0.4rem 1.2rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            color: var(--text-bright);
-            margin-bottom: 20px;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(45deg, var(--accent-color), var(--neon-glow));
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero h2 {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
         }
 
         .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin-bottom: 40px;
+            max-width: 600px;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
         }
 
-        .btn-container {
+        .hero-actions {
             display: flex;
-            gap: 20px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            border-radius: 6px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .btn-primary {
-            background-color: var(--neon-glow);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--cyan), #00b8c8);
+            color: #0a0a0f;
+            padding: 0.85rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            border: none;
+            cursor: pointer;
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 25px var(--neon-glow);
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.5);
+            transform: translateY(-2px);
         }
 
         .btn-secondary {
-            background-color: transparent;
-            color: var(--text-bright);
-            border: 1px solid var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 0.85rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
         }
 
         .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-color: var(--text-bright);
+            border-color: var(--text-secondary);
+            background: rgba(255,255,255,0.03);
         }
 
-        /* Utility/Library Section */
-        .utility {
-            padding: 80px 8%;
-            background-color: rgba(22, 27, 34, 0.5);
+        /* ===== CODE SNIPPET PREVIEW ===== */
+        .hero-code {
+            margin-top: 3rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: left;
+            max-width: 520px;
+            width: 100%;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .hero-code .code-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-code .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .hero-code .dot-r { background: #ff5f57; }
+        .hero-code .dot-y { background: #ffbd2e; }
+        .hero-code .dot-g { background: #28c840; }
+
+        .hero-code .code-tag {
+            color: #ff79c6;
+        }
+        .hero-code .code-attr {
+            color: #50fa7b;
+        }
+        .hero-code .code-val {
+            color: #f1fa8c;
+        }
+        .hero-code .code-style {
+            color: #8be9fd;
+        }
+        .hero-code .code-prop {
+            color: #bd93f9;
+        }
+        .hero-code .code-comment {
+            color: #6272a4;
+        }
+
+        /* ===== SECTION COMMON ===== */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        .section-container {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .section-title {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
             text-align: center;
-            font-size: 2.5rem;
-            color: var(--text-bright);
-            margin-bottom: 50px;
+            margin-bottom: 0.75rem;
         }
 
-        .utility-container {
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* ===== ABOUT ===== */
+        #about {
+            background: var(--bg-secondary);
+        }
+
+        .about-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .utility-container { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 2.5rem; }
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
         }
 
-        .preview-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 25px;
+        .about-card:hover {
+            border-color: rgba(0, 240, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        .code-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+        .about-card .icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* ===== LIBRARY ===== */
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lib-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .lib-card:hover {
+            border-color: rgba(0, 240, 255, 0.15);
+        }
+
+        .lib-card .lib-tag {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.08);
+            color: var(--cyan);
+            padding: 0.2rem 0.7rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+
+        .lib-card h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .lib-card p {
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            color: #8b949e;
+            margin-bottom: 1rem;
         }
 
-        .copy-btn {
+        .lib-card .preview-code {
+            background: var(--bg-primary);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: var(--text-muted);
+        }
+
+        .lib-card .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.75rem;
             background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 5px 10px;
-            border-radius: 4px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
         }
 
-        .copy-btn:hover {
-            border-color: var(--neon-glow);
-            color: var(--neon-glow);
+        .lib-card .copy-btn:hover {
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
         }
 
-        pre {
-            background-color: #0d1117;
-            padding: 15px;
-            border-radius: 6px;
-            overflow-x: auto;
-            color: #ff79c6;
-        }
-        .code-tag { color: #ff79c6; }
-        .code-attr { color: #50fa7b; }
-        .code-val { color: #f1fa8c; }
-
-        /* Tokenomics Section */
-        .tokenomics {
-            padding: 80px 8%;
+        /* ===== TOKENOMICS ===== */
+        #tokenomics {
+            background: var(--bg-secondary);
         }
 
-        .stats-grid {
+        .tokenomics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
         }
 
-        .stat-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 30px;
-            border-radius: 8px;
+        .tokenomics-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
             text-align: center;
-            transition: border-color 0.3s;
         }
 
-        .stat-card:hover {
-            border-color: var(--accent-color);
+        .tokenomics-card .big-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
         }
 
-        .stat-card h3 {
-            font-size: 1.1rem;
-            color: #8b949e;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+        .tokenomics-card h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
         }
 
-        .stat-card p {
-            font-size: 2rem;
+        .tokenomics-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* ===== BUY SECTION ===== */
+        #buy {
+            text-align: center;
+        }
+
+        #buy .buy-info {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            color: var(--text-secondary);
+        }
+
+        #buy .buy-info strong {
+            color: var(--text-primary);
+        }
+
+        .buy-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .buy-step {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .buy-step .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            margin-bottom: 0.75rem;
+        }
+
+        .buy-step h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .buy-step p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .btn-buy-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, var(--cyan), #00b8c8);
+            color: #0a0a0f;
+            padding: 1.2rem 3rem;
+            border-radius: 14px;
             font-weight: 800;
-            color: var(--text-bright);
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.35);
+            border: none;
+            cursor: pointer;
         }
 
-        /* Footer */
+        .btn-buy-large:hover {
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.55);
+            transform: translateY(-3px);
+        }
+
+        .btn-buy-large svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .buy-disclaimer {
+            margin-top: 2rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== FOOTER ===== */
         footer {
             text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid var(--border-color);
-            font-size: 0.9rem;
-            color: #8b949e;
+            padding: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--cyan);
+            text-decoration: none;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav {
+                padding: 0 1rem;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 15, 0.98);
+                border-bottom: 1px solid var(--border);
+                padding: 1.5rem;
+                gap: 1.25rem;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-links a {
+                font-size: 1rem;
+            }
+
+            .nav-buy-btn {
+                text-align: center;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .hero {
+                padding-top: 5rem;
+            }
+
+            section {
+                padding: 3rem 1.25rem;
+            }
+
+            .btn-buy-large {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo">
-            &lt;/&gt; <span>DEV Token</span>
-        </div>
-        <nav>
-            <a href="#about">About</a>
-            <a href="#library">Library</a>
-            <a href="#tokenomics">Tokenomics</a>
-            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank" class="copy-btn" style="border-color: var(--neon-glow); color: var(--neon-glow); padding: 8px 15px;">Buy $DEV</a>
-        </nav>
-    </header>
+    <!-- ===== NAVBAR ===== -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <rect x="2" y="2" width="24" height="24" rx="6" stroke="#00f0ff" stroke-width="2" fill="rgba(0,240,255,0.08)"/>
+                <path d="M9 14L13 18L19 10" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            DEV<span>Token</span>
+        </a>
 
-    <!-- Hero Section -->
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#about">Sobre</a></li>
+            <li><a href="#library">Biblioteca</a></li>
+            <li><a href="#tokenomics">Tokenomics</a></li>
+            <li><a href="#buy" class="nav-buy-btn">Comprar $DEV</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== HERO ===== -->
     <section class="hero">
-        <h1>Building the Future <br><span>One Component at a Time</span></h1>
-        <p>The utility token engineered for developers and crypto holders. Fueling a next-generation open-source library of ready-to-use HTML, CSS, and JS snippets to launch your projects instantly.</p>
-        <div class="btn-container">
-            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank" class="btn btn-primary">Buy on Memecoin Platform</a>
-            <a href="#library" class="btn btn-secondary">Explore Library</a>
+        <span class="hero-tag">🚀 $DEV Token</span>
+        <h1>Building the Future</h1>
+        <h2>One Component at a Time</h2>
+        <p>
+            O token utility projetado para desenvolvedores e holders de crypto.
+            Alimentando uma biblioteca open-source de snippets HTML, CSS e JS
+            prontos para uso — para lançar seus projetos em segundos.
+        </p>
+        <div class="hero-actions">
+            <a href="#buy" class="btn-primary">
+                Comprar $DEV Token
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+            <a href="#library" class="btn-secondary">
+                Explorar Biblioteca
+            </a>
         </div>
-    </section>
 
-    <!-- Utility / Library Section -->
-    <section class="utility" id="library">
-        <h2 class="section-title">The Blueprint Utility</h2>
-        <div class="utility-container">
-            <div>
-                <h3 style="color: var(--text-bright); font-size: 1.8rem; margin-bottom: 15px;">Like Bootstrap, But Faster.</h3>
-                <p style="margin-bottom: 20px;">No heavy frameworks or complicated installations. $DEV token powers a completely open marketplace and repository of drop-in UI structures.</p>
-                <p>Just find your element, click copy, and paste it directly into your project file. Pure HTML, custom optimized CSS, and native modern JavaScript.</p>
+        <!-- Code Preview -->
+        <div class="hero-code">
+            <div class="code-header">
+                <span class="dot dot-r"></span>
+                <span class="dot dot-y"></span>
+                <span class="dot dot-g"></span>
+                <span style="margin-left:auto;">component.dev — preview</span>
             </div>
-            
-            <!-- Interactive Live Code Component Box -->
-            <div class="preview-box">
-                <div class="code-header">
-                    <span>Component Preview: NeonButton.html</span>
-                    <button class="copy-btn" id="copyBtn" onclick="copySnippet()">Copy Code</button>
-                </div>
-                <pre><code><span class="code-tag">&lt;button</span> <span class="code-attr">class</span>=<span class="code-val">"dev-btn"</span><span class="code-tag">&gt;</span>
+            <pre><span class="code-tag">&lt;button</span> <span class="code-attr">class</span>=<span class="code-val">"dev-btn"</span><span class="code-tag">&gt;</span>
   Click Me
 <span class="code-tag">&lt;/button&gt;</span>
 
 <span class="code-tag">&lt;style&gt;</span>
-  <span class="code-attr">.dev-btn</span> {
-    <span class="code-attr">background</span>: #00f0ff;
-    <span class="code-attr">box-shadow</span>: 0 0 10px #00f0ff;
+  <span class="code-style">.dev-btn</span> <span class="code-prop">{</span>
+    <span class="code-attr">background</span>: <span class="code-val">#00f0ff</span>;
+    <span class="code-attr">box-shadow</span>: <span class="code-val">0 0 10px #00f0ff</span>;
+  <span class="code-prop">}</span>
+<span class="code-tag">&lt;/style&gt;</span></pre>
+        </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about">
+        <div class="section-container">
+            <h2 class="section-title">Por que DEV?</h2>
+            <p class="section-subtitle">
+                O ecossistema de componentes definitivo para devs que querem
+                velocidade sem abrir mão da qualidade.
+            </p>
+            <div class="about-grid">
+                <div class="about-card">
+                    <div class="icon">⚡</div>
+                    <h3>Like Bootstrap, But Faster</h3>
+                    <p>
+                        Sem frameworks pesados ou instalações complicadas.
+                        Encontre o componente, copie e cole direto no seu projeto.
+                    </p>
+                </div>
+                <div class="about-card">
+                    <div class="icon">🧩</div>
+                    <h3>Biblioteca Drop-in</h3>
+                    <p>
+                        Dezenas de componentes UI — botões, cards, modais, navbars,
+                        formulários — todos em HTML puro, CSS otimizado e JS moderno.
+                    </p>
+                </div>
+                <div class="about-card">
+                    <div class="icon">🔗</div>
+                    <h3>Utility Token</h3>
+                    <p>
+                        O token $DEV é a moeda do ecossistema. Use para desbloquear
+                        componentes premium, votar em novas funcionalidades e muito mais.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== LIBRARY ===== -->
+    <section id="library">
+        <div class="section-container">
+            <h2 class="section-title">Biblioteca de Componentes</h2>
+            <p class="section-subtitle">
+                Snippets prontos para copiar e colar. Sem bloat, só código puro.
+            </p>
+            <div class="library-grid">
+                <div class="lib-card">
+                    <span class="lib-tag">HTML + CSS</span>
+                    <h4>Dev Button</h4>
+                    <p>Botão estilizado com glow neon — perfeito para CTAs.</p>
+                    <div class="preview-code">
+&lt;button class="dev-btn"&gt;Click Me&lt;/button&gt;
+&lt;style&gt;
+  .dev-btn {
+    background: #00f0ff;
+    box-shadow: 0 0 10px #00f0ff;
   }
-<span class="code-tag">&lt;/style&gt;</span></code></pre>
+&lt;/style&gt;
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                </div>
+
+                <div class="lib-card">
+                    <span class="lib-tag">HTML + CSS</span>
+                    <h4>Glass Card</h4>
+                    <p>Card com efeito glassmorphism e borda sutil.</p>
+                    <div class="preview-code">
+&lt;div class="glass-card"&gt;
+  &lt;h3&gt;Title&lt;/h3&gt;
+  &lt;p&gt;Content here&lt;/p&gt;
+&lt;/div&gt;
+&lt;style&gt;
+  .glass-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+&lt;/style&gt;
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                </div>
+
+                <div class="lib-card">
+                    <span class="lib-tag">HTML + CSS</span>
+                    <h4>Navbar Responsiva</h4>
+                    <p>Navbar com menu mobile toggle pronta para uso.</p>
+                    <div class="preview-code">
+&lt;nav class="dev-nav"&gt;
+  &lt;div class="nav-logo"&gt;Logo&lt;/div&gt;
+  &lt;ul class="nav-links"&gt;
+    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+                    </div>
+                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
+                </div>
+
+                <div class="lib-card">
+                    <span class="lib-tag">Em Breve</span>
+                    <h4>Modal / Dialog</h4>
+                    <p>Modal acessível com overlay e animação suave.</p>
+                    <div class="preview-code" style="color: var(--text-muted);">
+&lt;!-- Disponível em breve --&gt;
+                    </div>
+                    <button class="copy-btn" disabled style="opacity:0.4;cursor:not-allowed;">🔒 $DEV</button>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Tokenomics Section -->
-    <section class="tokenomics" id="tokenomics">
-        <h2 class="section-title">Tokenomics</h2>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Supply</h3>
-                <p>1,000,000,000</p>
-                <span style="color: var(--accent-color); font-size: 0.9rem;">1 Billion Fixed DEV</span>
-            </div>
-            <div class="stat-card">
-                <h3>Target Audience</h3>
-                <p>Devs & Holders</p>
-                <span style="color: var(--accent-color); font-size: 0.9rem;">Shared Ecosystem growth</span>
-            </div>
-            <div class="stat-card">
-                <h3>Core Purpose</h3>
-                <p>UI Component Utility</p>
-                <span style="color: var(--accent-color); font-size: 0.9rem;">No bloat, pure code snippets</span>
+    <!-- ===== TOKENOMICS ===== -->
+    <section id="tokenomics">
+        <div class="section-container">
+            <h2 class="section-title">Tokenomics</h2>
+            <p class="section-subtitle">
+                Supply fixo de 1 bilhão de tokens. Economia simples, sustentável
+                e alinhada com a comunidade.
+            </p>
+            <div class="tokenomics-grid">
+                <div class="tokenomics-card">
+                    <div class="big-number">1B</div>
+                    <h4>Total Supply</h4>
+                    <p>1.000.000.000 DEV — Supply fixo, sem mintagem futura</p>
+                </div>
+                <div class="tokenomics-card">
+                    <div class="big-number">👥</div>
+                    <h4>Público-Alvo</h4>
+                    <p>Devs &amp; Holders — crescimento compartilhado do ecossistema</p>
+                </div>
+                <div class="tokenomics-card">
+                    <div class="big-number">🔧</div>
+                    <h4>Core Purpose</h4>
+                    <p>UI Component Utility — sem bloat, só snippets puros</p>
+                </div>
+                <div class="tokenomics-card">
+                    <div class="big-number">🛡️</div>
+                    <h4>SkillRoyalty</h4>
+                    <p>70% para criadores · 15% plataforma · 15% usuários</p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ===== BUY SECTION ===== -->
+    <section id="buy">
+        <div class="section-container">
+            <h2 class="section-title">Comprar $DEV Token</h2>
+            <p class="buy-info">
+                O token <strong>$DEV</strong> está disponível na <strong>four.meme</strong>,
+                o melhor launchpad de tokens na BNB Chain.
+            </p>
+
+            <div class="buy-steps">
+                <div class="buy-step">
+                    <div class="step-number">1</div>
+                    <h4>Conecte sua Wallet</h4>
+                    <p>Use MetaMask, Binance Wallet, TrustWallet ou TokenPocket na BNB Chain.</p>
+                </div>
+                <div class="buy-step">
+                    <div class="step-number">2</div>
+                    <h4>Adicione BNB</h4>
+                    <p>Garanta que sua carteira tenha BNB disponível para comprar $DEV.</p>
+                </div>
+                <div class="buy-step">
+                    <div class="step-number">3</div>
+                    <h4>Compre na four.meme</h4>
+                    <p>Clique no botão abaixo e execute a compra diretamente no launchpad.</p>
+                </div>
+            </div>
+
+            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="btn-buy-large">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                Comprar $DEV na four.meme
+            </a>
+
+            <p class="buy-disclaimer">
+                ⚠️ Criptoativos são voláteis e envolvem riscos. DYOR (faça sua própria pesquisa)
+                antes de investir. O contrato do token está auditado pela Salus Security.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
     <footer>
-        <p>&copy; 2026 DEV Token. Built for the creators of tomorrow. Official website asset repository.</p>
+        <p>
+            © 2026 <strong>DEV Token</strong> — Construído pela comunidade de desenvolvedores.
+            <br>
+            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank">four.meme</a>
+            ·
+            <a href="https://bscscan.com/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5" target="_blank">BscScan</a>
+        </p>
     </footer>
 
-    <!-- JavaScript logic -->
     <script>
-        function copySnippet() {
-            const codeText = `<button class="dev-btn">\n  Click Me\n</button>\n\n<style>\n  .dev-btn {\n    background: #00f0ff;\n    box-shadow: 0 0 10px #00f0ff;\n  }\n</style>`;
-            
-            navigator.clipboard.writeText(codeText).then(() => {
-                const btn = document.getElementById('copyBtn');
-                btn.innerText = 'Copied!';
-                btn.style.borderColor = '#50fa7b';
-                btn.style.color = '#50fa7b';
-                
+        // Mobile Menu Toggle
+        const toggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+
+        toggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu on link click (mobile)
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Copy code function
+        function copyCode(btn) {
+            const codeBlock = btn.previousElementSibling;
+            const code = codeBlock.textContent.trim();
+
+            navigator.clipboard.writeText(code).then(() => {
+                const original = btn.textContent;
+                btn.textContent = '✅ Copiado!';
                 setTimeout(() => {
-                    btn.innerText = 'Copy Code';
-                    btn.style.borderColor = 'var(--border-color)';
-                    btn.style.color = 'var(--text-main)';
+                    btn.textContent = original;
                 }, 2000);
-            }).catch(err => {
-                console.error('Error copying text: ', err);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = code;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                const original = btn.textContent;
+                btn.textContent = '✅ Copiado!';
+                setTimeout(() => {
+                    btn.textContent = original;
+                }, 2000);
             });
         }
     </script>
+
 </body>
 </html>
