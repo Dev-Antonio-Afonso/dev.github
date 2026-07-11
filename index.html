@@ -1,936 +1,931 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DEV Token | The Developer Component Ecosystem</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #111118;
-            --bg-card: #16161f;
-            --cyan: #00f0ff;
-            --cyan-glow: rgba(0, 240, 255, 0.15);
-            --purple: #7c3aed;
-            --text-primary: #f1f1f7;
-            --text-secondary: #9494a8;
-            --text-muted: #5c5c72;
-            --border: #1e1e2a;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Background Gradient Effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(ellipse at 20% 50%, var(--cyan-glow) 0%, transparent 50%),
-                        radial-gradient(ellipse at 80% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
-        /* ===== NAVBAR ===== */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(10, 10, 15, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            padding: 0 2rem;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        .nav-logo span {
-            color: var(--cyan);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .nav-buy-btn {
-            background: linear-gradient(135deg, var(--cyan), #00b8c8);
-            color: #0a0a0f !important;
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 700 !important;
-            font-size: 0.85rem !important;
-            transition: all 0.3s !important;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.25);
-        }
-
-        .nav-buy-btn:hover {
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.45) !important;
-            transform: translateY(-1px);
-            color: #0a0a0f !important;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text-primary);
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0.5rem;
-        }
-
-        /* ===== HERO ===== */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 6rem 2rem 4rem;
-            position: relative;
-        }
-
-        .hero-tag {
-            display: inline-block;
-            background: rgba(0, 240, 255, 0.08);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            color: var(--cyan);
-            padding: 0.4rem 1.2rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 900;
-            line-height: 1.05;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero h2 {
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .hero p {
-            max-width: 600px;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, var(--cyan), #00b8c8);
-            color: #0a0a0f;
-            padding: 0.85rem 2rem;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 0 50px rgba(0, 240, 255, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: transparent;
-            color: var(--text-primary);
-            padding: 0.85rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--text-secondary);
-            background: rgba(255,255,255,0.03);
-        }
-
-        /* ===== CODE SNIPPET PREVIEW ===== */
-        .hero-code {
-            margin-top: 3rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            text-align: left;
-            max-width: 520px;
-            width: 100%;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            line-height: 1.7;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .hero-code .code-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 0.75rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .hero-code .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .hero-code .dot-r { background: #ff5f57; }
-        .hero-code .dot-y { background: #ffbd2e; }
-        .hero-code .dot-g { background: #28c840; }
-
-        .hero-code .code-tag {
-            color: #ff79c6;
-        }
-        .hero-code .code-attr {
-            color: #50fa7b;
-        }
-        .hero-code .code-val {
-            color: #f1fa8c;
-        }
-        .hero-code .code-style {
-            color: #8be9fd;
-        }
-        .hero-code .code-prop {
-            color: #bd93f9;
-        }
-        .hero-code .code-comment {
-            color: #6272a4;
-        }
-
-        /* ===== SECTION COMMON ===== */
-        section {
-            padding: 5rem 2rem;
-        }
-
-        .section-container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.8rem);
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 600px;
-            margin: 0 auto 3rem;
-        }
-
-        /* ===== ABOUT ===== */
-        #about {
-            background: var(--bg-secondary);
-        }
-
-        .about-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .about-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-        }
-
-        .about-card:hover {
-            border-color: rgba(0, 240, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .about-card .icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .about-card h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .about-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* ===== LIBRARY ===== */
-        .library-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .lib-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .lib-card:hover {
-            border-color: rgba(0, 240, 255, 0.15);
-        }
-
-        .lib-card .lib-tag {
-            display: inline-block;
-            background: rgba(0, 240, 255, 0.08);
-            color: var(--cyan);
-            padding: 0.2rem 0.7rem;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-
-        .lib-card h4 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .lib-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        .lib-card .preview-code {
-            background: var(--bg-primary);
-            border-radius: 8px;
-            padding: 1rem;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.78rem;
-            line-height: 1.6;
-            overflow-x: auto;
-            color: var(--text-muted);
-        }
-
-        .lib-card .copy-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            margin-top: 0.75rem;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            padding: 0.4rem 1rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .lib-card .copy-btn:hover {
-            border-color: var(--text-secondary);
-            color: var(--text-primary);
-        }
-
-        /* ===== TOKENOMICS ===== */
-        #tokenomics {
-            background: var(--bg-secondary);
-        }
-
-        .tokenomics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .tokenomics-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .tokenomics-card .big-number {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--cyan);
-            margin-bottom: 0.5rem;
-        }
-
-        .tokenomics-card h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-        }
-
-        .tokenomics-card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* ===== BUY SECTION ===== */
-        #buy {
-            text-align: center;
-        }
-
-        #buy .buy-info {
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            color: var(--text-secondary);
-        }
-
-        #buy .buy-info strong {
-            color: var(--text-primary);
-        }
-
-        .buy-steps {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            max-width: 700px;
-            margin: 0 auto 2.5rem;
-        }
-
-        .buy-step {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-        }
-
-        .buy-step .step-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--cyan);
-            margin-bottom: 0.75rem;
-        }
-
-        .buy-step h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-
-        .buy-step p {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-        }
-
-        .btn-buy-large {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: linear-gradient(135deg, var(--cyan), #00b8c8);
-            color: #0a0a0f;
-            padding: 1.2rem 3rem;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 1.2rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.35);
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-buy-large:hover {
-            box-shadow: 0 0 60px rgba(0, 240, 255, 0.55);
-            transform: translateY(-3px);
-        }
-
-        .btn-buy-large svg {
-            width: 24px;
-            height: 24px;
-        }
-
-        .buy-disclaimer {
-            margin-top: 2rem;
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        footer a {
-            color: var(--cyan);
-            text-decoration: none;
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            nav {
-                padding: 0 1rem;
-            }
-
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 64px;
-                left: 0;
-                right: 0;
-                background: rgba(10, 10, 15, 0.98);
-                border-bottom: 1px solid var(--border);
-                padding: 1.5rem;
-                gap: 1.25rem;
-                align-items: stretch;
-                text-align: center;
-            }
-
-            .nav-links.active {
-                display: flex;
-            }
-
-            .nav-links a {
-                font-size: 1rem;
-            }
-
-            .nav-buy-btn {
-                text-align: center;
-            }
-
-            .mobile-toggle {
-                display: block;
-            }
-
-            .hero {
-                padding-top: 5rem;
-            }
-
-            section {
-                padding: 3rem 1.25rem;
-            }
-
-            .btn-buy-large {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEV Token — A Biblioteca dos Programadores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0f;
+      color: #e8e8f0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    img {
+      max-width: 100%;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a0a0f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #7c3aed;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #6d28d9;
+    }
+
+    /* ===== ANIMATED BG ===== */
+    #particles-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ===== NAV ===== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 10, 15, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.15);
+      transition: 0.3s;
+    }
+    .navbar.scrolled {
+      background: rgba(10, 10, 15, 0.95);
+      padding: 0.8rem 2rem;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 800;
+      font-size: 1.4rem;
+      letter-spacing: -0.5px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+    .logo span {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #a0a0b8;
+      transition: 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #7c3aed, #3b82f6);
+      transition: 0.3s;
+    }
+    .nav-links a:hover {
+      color: #fff;
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    .nav-btn {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      color: #fff !important;
+      padding: 0.5rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600 !important;
+    }
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(124, 58, 237, 0.35);
+    }
+    .nav-btn::after {
+      display: none !important;
+    }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+    .hamburger span {
+      width: 26px;
+      height: 2px;
+      background: #e8e8f0;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+    .hamburger.active span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .hamburger.active span:nth-child(2) {
+      opacity: 0;
+    }
+    .hamburger.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(5px, -5px);
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      text-align: center;
+    }
+    .hero-content {
+      max-width: 820px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(124, 58, 237, 0.15);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      color: #a78bfa;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+    .hero h1 {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin-bottom: 1.2rem;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.15rem;
+      color: #a0a0b8;
+      max-width: 640px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.8;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.9rem 2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: 0.3s;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 35px rgba(124, 58, 237, 0.45);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(124, 58, 237, 0.4);
+      color: #c4b5fd;
+    }
+    .btn-outline:hover {
+      border-color: #7c3aed;
+      background: rgba(124, 58, 237, 0.08);
+      transform: translateY(-3px);
+    }
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #7c3aed, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 0.2rem;
+    }
+
+    /* ===== SECTIONS ===== */
+    .section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-label {
+      display: inline-block;
+      background: rgba(124, 58, 237, 0.12);
+      color: #a78bfa;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3rem 1rem;
+      border-radius: 50px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: #8b8fa3;
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    /* ===== TOKEN INFO ===== */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+    .token-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      border-radius: 16px;
+      padding: 1.8rem;
+      transition: 0.3s;
+    }
+    .token-card:hover {
+      border-color: rgba(124, 58, 237, 0.35);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(124, 58, 237, 0.08);
+    }
+    .token-card .icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(59, 130, 246, 0.15));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .token-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .token-card p {
+      font-size: 0.85rem;
+      color: #8b8fa3;
+      line-height: 1.7;
+    }
+    .token-card .highlight {
+      color: #a78bfa;
+      font-weight: 600;
+    }
+
+    /* ===== TAX TABLE ===== */
+    .tax-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .tax-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(124, 58, 237, 0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .tax-card.buy {
+      border-color: rgba(52, 211, 153, 0.2);
+    }
+    .tax-card.sell {
+      border-color: rgba(251, 146, 60, 0.2);
+    }
+    .tax-card .tax-pct {
+      font-size: 3rem;
+      font-weight: 900;
+      margin: 0.5rem 0;
+    }
+    .tax-card.buy .tax-pct {
+      color: #34d399;
+    }
+    .tax-card.sell .tax-pct {
+      color: #fb923c;
+    }
+    .tax-card .tax-label {
+      font-size: 0.9rem;
+      color: #8b8fa3;
+    }
+    .tax-card .tax-info {
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 0.6rem;
+      line-height: 1.6;
+    }
+
+    /* ===== ROADMAP ===== */
+    .roadmap {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 2rem;
+    }
+    .roadmap::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, #7c3aed, #3b82f6, #06b6d4);
+    }
+    .roadmap-item {
+      position: relative;
+      padding: 1.5rem 0 1.5rem 2rem;
+    }
+    .roadmap-item::before {
+      content: '';
+      position: absolute;
+      left: -2rem;
+      top: 2rem;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #7c3aed;
+      border: 3px solid #0a0a0f;
+      box-shadow: 0 0 0 2px #7c3aed;
+    }
+    .roadmap-item.done::before {
+      background: #34d399;
+      box-shadow: 0 0 0 2px #34d399;
+    }
+    .roadmap-item.future::before {
+      background: #374151;
+      box-shadow: 0 0 0 2px #374151;
+    }
+    .roadmap-item h4 {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.3rem;
+    }
+    .roadmap-item p {
+      font-size: 0.85rem;
+      color: #8b8fa3;
+    }
+    .roadmap-item .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+      margin-bottom: 0.4rem;
+    }
+    .tag-live {
+      background: rgba(52, 211, 153, 0.15);
+      color: #34d399;
+    }
+    .tag-soon {
+      background: rgba(251, 191, 36, 0.15);
+      color: #fbbf24;
+    }
+    .tag-future {
+      background: rgba(107, 114, 128, 0.15);
+      color: #9ca3af;
+    }
+
+    /* ===== COMMUNITY ===== */
+    .community-grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .community-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(124, 58, 237, 0.15);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #e8e8f0;
+      transition: 0.3s;
+    }
+    .community-btn:hover {
+      background: rgba(124, 58, 237, 0.12);
+      border-color: #7c3aed;
+      transform: translateY(-2px);
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(124, 58, 237, 0.08);
+      color: #6b7280;
+      font-size: 0.85rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: #8b8fa3;
+      transition: 0.2s;
+    }
+    .footer-links a:hover {
+      color: #a78bfa;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        height: 100vh;
+        background: rgba(10, 10, 15, 0.98);
+        backdrop-filter: blur(30px);
+        flex-direction: column;
+        justify-content: center;
+        gap: 2rem;
+        padding: 4rem 2rem;
+        transition: 0.4s;
+        border-left: 1px solid rgba(124, 58, 237, 0.15);
+      }
+      .nav-links.open {
+        right: 0;
+      }
+      .hamburger {
+        display: flex;
+      }
+      .hero-stats {
+        gap: 1.5rem;
+      }
+      .tax-box {
+        grid-template-columns: 1fr;
+      }
+      .section {
+        padding: 4rem 1.2rem;
+      }
+    }
+
+    /* ===== KEYFRAMES ===== */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .float {
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
 </head>
 <body>
 
-    <!-- ===== NAVBAR ===== -->
-    <nav>
-        <a href="#" class="nav-logo">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-                <rect x="2" y="2" width="24" height="24" rx="6" stroke="#00f0ff" stroke-width="2" fill="rgba(0,240,255,0.08)"/>
-                <path d="M9 14L13 18L19 10" stroke="#00f0ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            DEV<span>Token</span>
+  <!-- ===== PARTICLES CANVAS ===== -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="logo">
+      <div class="logo-icon">&lt;/&gt;</div>
+      <span>DEV</span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#token">Token</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#comunidade">Comunidade</a></li>
+      <li><a href="https://t.me/devtokenbnb" target="_blank" class="nav-btn">🐹 Telegram</a></li>
+    </ul>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">🚀 BSC • $DEV • 1 Bilhão de Tokens</div>
+      <h1>
+        O Token Dos<br />
+        <span class="gradient">Devs & Programadores</span>
+      </h1>
+      <p>
+        DEV nasceu para unir programadores e holders de cripto. Nosso objetivo? 
+        Construir a maior biblioteca de componentes para desenvolvedores — 
+        melhor que Bootstrap. Junte-se à revolução.
+      </p>
+      <div class="hero-actions">
+        <a href="https://four.meme" target="_blank" class="btn btn-primary">
+          🛒 Comprar na Four.Meme
         </a>
+        <a href="https://t.me/devtokenbnb" target="_blank" class="btn btn-outline">
+          💬 Entrar no Telegram
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">1B</div>
+          <div class="stat-label">Supply Total</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">2%</div>
+          <div class="stat-label">Taxa de Compra</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">10%</div>
+          <div class="stat-label">Taxa de Venda*</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">DEV</div>
+          <div class="stat-label">Ticker</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+  <!-- ===== SOBRE ===== -->
+  <section class="section" id="sobre">
+    <span class="section-label">💡 Projeto</span>
+    <h2 class="section-title">O que é o <span style="background:linear-gradient(135deg,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">DEV</span>?</h2>
+    <p class="section-sub">
+      DEV é um token BSC criado por devs, para devs. A cada transação, parte da taxa 
+      alimenta o desenvolvimento de uma biblioteca open-source completa — mais rápida, 
+      mais modular e mais leve que Bootstrap.
+    </p>
 
-        <ul class="nav-links" id="navLinks">
-            <li><a href="#about">Sobre</a></li>
-            <li><a href="#library">Biblioteca</a></li>
-            <li><a href="#tokenomics">Tokenomics</a></li>
-            <li><a href="#buy" class="nav-buy-btn">Comprar $DEV</a></li>
-        </ul>
-    </nav>
-
-    <!-- ===== HERO ===== -->
-    <section class="hero">
-        <span class="hero-tag">🚀 $DEV Token</span>
-        <h1>Building the Future</h1>
-        <h2>One Component at a Time</h2>
+    <div class="token-grid">
+      <div class="token-card">
+        <div class="icon">📚</div>
+        <h3>Biblioteca DEV-UI</h3>
         <p>
-            O token utility projetado para desenvolvedores e holders de crypto.
-            Alimentando uma biblioteca open-source de snippets HTML, CSS e JS
-            prontos para uso — para lançar seus projetos em segundos.
+          Framework de componentes em HTML/CSS/JS com foco em performance, 
+          acessibilidade e customização. Feito por devs da comunidade.
         </p>
-        <div class="hero-actions">
-            <a href="#buy" class="btn-primary">
-                Comprar $DEV Token
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </a>
-            <a href="#library" class="btn-secondary">
-                Explorar Biblioteca
-            </a>
-        </div>
-
-        <!-- Code Preview -->
-        <div class="hero-code">
-            <div class="code-header">
-                <span class="dot dot-r"></span>
-                <span class="dot dot-y"></span>
-                <span class="dot dot-g"></span>
-                <span style="margin-left:auto;">component.dev — preview</span>
-            </div>
-            <pre><span class="code-tag">&lt;button</span> <span class="code-attr">class</span>=<span class="code-val">"dev-btn"</span><span class="code-tag">&gt;</span>
-  Click Me
-<span class="code-tag">&lt;/button&gt;</span>
-
-<span class="code-tag">&lt;style&gt;</span>
-  <span class="code-style">.dev-btn</span> <span class="code-prop">{</span>
-    <span class="code-attr">background</span>: <span class="code-val">#00f0ff</span>;
-    <span class="code-attr">box-shadow</span>: <span class="code-val">0 0 10px #00f0ff</span>;
-  <span class="code-prop">}</span>
-<span class="code-tag">&lt;/style&gt;</span></pre>
-        </div>
-    </section>
-
-    <!-- ===== ABOUT ===== -->
-    <section id="about">
-        <div class="section-container">
-            <h2 class="section-title">Por que DEV?</h2>
-            <p class="section-subtitle">
-                O ecossistema de componentes definitivo para devs que querem
-                velocidade sem abrir mão da qualidade.
-            </p>
-            <div class="about-grid">
-                <div class="about-card">
-                    <div class="icon">⚡</div>
-                    <h3>Like Bootstrap, But Faster</h3>
-                    <p>
-                        Sem frameworks pesados ou instalações complicadas.
-                        Encontre o componente, copie e cole direto no seu projeto.
-                    </p>
-                </div>
-                <div class="about-card">
-                    <div class="icon">🧩</div>
-                    <h3>Biblioteca Drop-in</h3>
-                    <p>
-                        Dezenas de componentes UI — botões, cards, modais, navbars,
-                        formulários — todos em HTML puro, CSS otimizado e JS moderno.
-                    </p>
-                </div>
-                <div class="about-card">
-                    <div class="icon">🔗</div>
-                    <h3>Utility Token</h3>
-                    <p>
-                        O token $DEV é a moeda do ecossistema. Use para desbloquear
-                        componentes premium, votar em novas funcionalidades e muito mais.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== LIBRARY ===== -->
-    <section id="library">
-        <div class="section-container">
-            <h2 class="section-title">Biblioteca de Componentes</h2>
-            <p class="section-subtitle">
-                Snippets prontos para copiar e colar. Sem bloat, só código puro.
-            </p>
-            <div class="library-grid">
-                <div class="lib-card">
-                    <span class="lib-tag">HTML + CSS</span>
-                    <h4>Dev Button</h4>
-                    <p>Botão estilizado com glow neon — perfeito para CTAs.</p>
-                    <div class="preview-code">
-&lt;button class="dev-btn"&gt;Click Me&lt;/button&gt;
-&lt;style&gt;
-  .dev-btn {
-    background: #00f0ff;
-    box-shadow: 0 0 10px #00f0ff;
-  }
-&lt;/style&gt;
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
-                </div>
-
-                <div class="lib-card">
-                    <span class="lib-tag">HTML + CSS</span>
-                    <h4>Glass Card</h4>
-                    <p>Card com efeito glassmorphism e borda sutil.</p>
-                    <div class="preview-code">
-&lt;div class="glass-card"&gt;
-  &lt;h3&gt;Title&lt;/h3&gt;
-  &lt;p&gt;Content here&lt;/p&gt;
-&lt;/div&gt;
-&lt;style&gt;
-  .glass-card {
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-&lt;/style&gt;
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
-                </div>
-
-                <div class="lib-card">
-                    <span class="lib-tag">HTML + CSS</span>
-                    <h4>Navbar Responsiva</h4>
-                    <p>Navbar com menu mobile toggle pronta para uso.</p>
-                    <div class="preview-code">
-&lt;nav class="dev-nav"&gt;
-  &lt;div class="nav-logo"&gt;Logo&lt;/div&gt;
-  &lt;ul class="nav-links"&gt;
-    &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/nav&gt;
-                    </div>
-                    <button class="copy-btn" onclick="copyCode(this)">📋 Copiar</button>
-                </div>
-
-                <div class="lib-card">
-                    <span class="lib-tag">Em Breve</span>
-                    <h4>Modal / Dialog</h4>
-                    <p>Modal acessível com overlay e animação suave.</p>
-                    <div class="preview-code" style="color: var(--text-muted);">
-&lt;!-- Disponível em breve --&gt;
-                    </div>
-                    <button class="copy-btn" disabled style="opacity:0.4;cursor:not-allowed;">🔒 $DEV</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== TOKENOMICS ===== -->
-    <section id="tokenomics">
-        <div class="section-container">
-            <h2 class="section-title">Tokenomics</h2>
-            <p class="section-subtitle">
-                Supply fixo de 1 bilhão de tokens. Economia simples, sustentável
-                e alinhada com a comunidade.
-            </p>
-            <div class="tokenomics-grid">
-                <div class="tokenomics-card">
-                    <div class="big-number">1B</div>
-                    <h4>Total Supply</h4>
-                    <p>1.000.000.000 DEV — Supply fixo, sem mintagem futura</p>
-                </div>
-                <div class="tokenomics-card">
-                    <div class="big-number">👥</div>
-                    <h4>Público-Alvo</h4>
-                    <p>Devs &amp; Holders — crescimento compartilhado do ecossistema</p>
-                </div>
-                <div class="tokenomics-card">
-                    <div class="big-number">🔧</div>
-                    <h4>Core Purpose</h4>
-                    <p>UI Component Utility — sem bloat, só snippets puros</p>
-                </div>
-                <div class="tokenomics-card">
-                    <div class="big-number">🛡️</div>
-                    <h4>SkillRoyalty</h4>
-                    <p>70% para criadores · 15% plataforma · 15% usuários</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ===== BUY SECTION ===== -->
-    <section id="buy">
-        <div class="section-container">
-            <h2 class="section-title">Comprar $DEV Token</h2>
-            <p class="buy-info">
-                O token <strong>$DEV</strong> está disponível na <strong>four.meme</strong>,
-                o melhor launchpad de tokens na BNB Chain.
-            </p>
-
-            <div class="buy-steps">
-                <div class="buy-step">
-                    <div class="step-number">1</div>
-                    <h4>Conecte sua Wallet</h4>
-                    <p>Use MetaMask, Binance Wallet, TrustWallet ou TokenPocket na BNB Chain.</p>
-                </div>
-                <div class="buy-step">
-                    <div class="step-number">2</div>
-                    <h4>Adicione BNB</h4>
-                    <p>Garanta que sua carteira tenha BNB disponível para comprar $DEV.</p>
-                </div>
-                <div class="buy-step">
-                    <div class="step-number">3</div>
-                    <h4>Compre na four.meme</h4>
-                    <p>Clique no botão abaixo e execute a compra diretamente no launchpad.</p>
-                </div>
-            </div>
-
-            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="btn-buy-large">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                </svg>
-                Comprar $DEV na four.meme
-            </a>
-
-            <p class="buy-disclaimer">
-                ⚠️ Criptoativos são voláteis e envolvem riscos. DYOR (faça sua própria pesquisa)
-                antes de investir. O contrato do token está auditado pela Salus Security.
-            </p>
-        </div>
-    </section>
-
-    <!-- ===== FOOTER ===== -->
-    <footer>
+      </div>
+      <div class="token-card">
+        <div class="icon">🛡️</div>
+        <h3>Proteção aos Holders</h3>
         <p>
-            © 2026 <strong>DEV Token</strong> — Construído pela comunidade de desenvolvedores.
-            <br>
-            <a href="https://four.meme/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5?code=EXUC2Q5LCR8X" target="_blank">four.meme</a>
-            ·
-            <a href="https://bscscan.com/token/0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5" target="_blank">BscScan</a>
+          Taxa de <span class="highlight">10% na venda</span> desestimula 
+          oportunistas no início. Em breve será reduzida para 2% — 
+          quando o projeto estiver consolidado.
         </p>
-    </footer>
+      </div>
+      <div class="token-card">
+        <div class="icon">🔗</div>
+        <h3>Multi-DEX & CEX</h3>
+        <p>
+          Listado na <span class="highlight">Four.Meme</span>, em breve 
+          PancakeSwap, Uniswap, Binance, Gate.io e outras.
+        </p>
+      </div>
+      <div class="token-card">
+        <div class="icon">⚡</div>
+        <h3>Melhor que Bootstrap</h3>
+        <p>
+          Componentes mais leves, grid flexível, temas dinâmicos e zero 
+          dependências. Foco total na experiência do desenvolvedor.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        // Mobile Menu Toggle
-        const toggle = document.getElementById('mobileToggle');
-        const navLinks = document.getElementById('navLinks');
+  <!-- ===== TOKEN INFO ===== -->
+  <section class="section" id="token">
+    <span class="section-label">🪙 Tokenomics</span>
+    <h2 class="section-title">Detalhes do Token</h2>
+    <p class="section-sub">
+      Transparência total. Veja como funciona a economia do DEV.
+    </p>
 
-        toggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-        });
+    <div class="token-grid" style="margin-bottom:3rem;">
+      <div class="token-card">
+        <h3>📊 Contract</h3>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;word-break:break-all;background:rgba(124,58,237,0.06);padding:0.6rem;border-radius:6px;margin-top:0.4rem;">
+          0x7ab9c9b6375efd3d2a83fa68a52e6c18360901a5
+        </p>
+      </div>
+      <div class="token-card">
+        <h3>💰 Supply</h3>
+        <p style="font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+          1.000.000.000
+        </p>
+        <p style="font-size:0.8rem;color:#6b7280;">1 bilhão de tokens</p>
+      </div>
+      <div class="token-card">
+        <h3>🔗 Rede</h3>
+        <p>Binance Smart Chain (BSC)</p>
+        <p style="font-size:0.8rem;color:#6b7280;">Four.Meme | PancakeSwap | Uniswap</p>
+      </div>
+    </div>
 
-        // Close menu on link click (mobile)
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-            });
-        });
+    <h3 style="margin-bottom:1.5rem;font-size:1.3rem;">📋 Taxas</h3>
+    <div class="tax-box">
+      <div class="tax-card buy">
+        <div class="tax-label">Taxa de Compra</div>
+        <div class="tax-pct">2%</div>
+        <div class="tax-info">
+          Taxa reduzida para incentivar novos holders. 
+          Destinada ao desenvolvimento da biblioteca e marketing.
+        </div>
+      </div>
+      <div class="tax-card sell">
+        <div class="tax-label">Taxa de Venda</div>
+        <div class="tax-pct">10%</div>
+        <div class="tax-info">
+          ⚠️ Taxa anti-dump para proteger o projeto no início.<br />
+          <span style="color:#fbbf24;">Em breve: redução para 2%</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        // Copy code function
-        function copyCode(btn) {
-            const codeBlock = btn.previousElementSibling;
-            const code = codeBlock.textContent.trim();
+  <!-- ===== ROADMAP ===== -->
+  <section class="section" id="roadmap">
+    <span class="section-label">🗺️ Roadmap</span>
+    <h2 class="section-title">Nossa Jornada</h2>
+    <p class="section-sub">Cada fase é um passo rumo à maior biblioteca dev do ecossistema cripto.</p>
 
-            navigator.clipboard.writeText(code).then(() => {
-                const original = btn.textContent;
-                btn.textContent = '✅ Copiado!';
-                setTimeout(() => {
-                    btn.textContent = original;
-                }, 2000);
-            }).catch(() => {
-                // Fallback for older browsers
-                const textarea = document.createElement('textarea');
-                textarea.value = code;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                const original = btn.textContent;
-                btn.textContent = '✅ Copiado!';
-                setTimeout(() => {
-                    btn.textContent = original;
-                }, 2000);
-            });
+    <div class="roadmap">
+      <div class="roadmap-item done">
+        <span class="tag tag-live">✅ AO VIVO</span>
+        <h4>Fase 1 — Lançamento</h4>
+        <p>Token DEV criado na Four.Meme. Telegram e Twitter no ar. Contrato auditado pela comunidade.</p>
+      </div>
+      <div class="roadmap-item">
+        <span class="tag tag-soon">🔥 EM BREVE</span>
+        <h4>Fase 2 — Expansão DEX</h4>
+        <p>Listagem no PancakeSwap, Uniswap e GMGN. Redução da taxa de venda para 2%.</p>
+      </div>
+      <div class="roadmap-item">
+        <span class="tag tag-soon">🔥 EM BREVE</span>
+        <h4>Fase 3 — Biblioteca DEV-UI Alpha</h4>
+        <p>Primeira versão da biblioteca de componentes. Repositório público no GitHub para contribuições.</p>
+      </div>
+      <div class="roadmap-item future">
+        <span class="tag tag-future">🔮 FUTURO</span>
+        <h4>Fase 4 — CEXs & Ecossistema</h4>
+        <p>Listagem em exchanges centralizadas: Binance, Gate.io, MEXC. Parcerias com dev houses.</p>
+      </div>
+      <div class="roadmap-item future">
+        <span class="tag tag-future">🔮 FUTURO</span>
+        <h4>Fase 5 — DEV Framework</h4>
+        <p>Framework completo com CLI, template engine, documentação interativa e marketplace de temas.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== COMMUNITY ===== -->
+  <section class="section" id="comunidade">
+    <span class="section-label">🌐 Comunidade</span>
+    <h2 class="section-title">Junte-se ao DEV</h2>
+    <p class="section-sub">
+      Entre no grupo do Telegram, siga no Twitter e faça parte da construção 
+      da melhor ferramenta para desenvolvedores web.
+    </p>
+
+    <div class="community-grid">
+      <a href="https://t.me/devtokenbnb" target="_blank" class="community-btn">
+        💬 Telegram — @devtokenbnb
+      </a>
+      <a href="https://x.com/Devtokenhtml" target="_blank" class="community-btn">
+        🐦 Twitter — @Devtokenhtml
+      </a>
+      <a href="https://gmgn.ai/r/qZCebcnD" target="_blank" class="community-btn">
+        ⚡ Comprar na GMGN
+      </a>
+      <a href="https://four.meme" target="_blank" class="community-btn">
+        🛒 Comprar na Four.Meme
+      </a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://t.me/devtokenbnb" target="_blank">Telegram</a>
+      <a href="https://x.com/Devtokenhtml" target="_blank">Twitter</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#token">Tokenomics</a>
+    </div>
+    <p>© 2026 DEV Token. Built by devs, for devs. &lt;/&gt;</p>
+  </footer>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ===== PARTICLES =====
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let mouseX = -9999, mouseY = -9999;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.opacity = Math.random() * 0.5 + 0.15;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        const dx = mouseX - this.x;
+        const dy = mouseY - this.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          this.x -= dx * 0.005;
+          this.y -= dy * 0.005;
         }
-    </script>
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(124, 58, 237, ${this.opacity})`;
+        ctx.fill();
+      }
+    }
 
+    for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+    function drawConnections() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 140) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(124, 58, 237, ${0.06 * (1 - dist / 140)})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      drawConnections();
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ===== NAVBAR SCROLL =====
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    });
+
+    // ===== MOBILE MENU =====
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      navLinks.classList.toggle('open');
+    });
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('active');
+        navLinks.classList.remove('open');
+      });
+    });
+
+    // ===== SCROLL REVEAL (FADE UP) =====
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Apply fade-up to cards and sections automatically
+    document.querySelectorAll('.token-card, .tax-card, .roadmap-item, .community-btn, .section-title, .section-sub, .section-label, .hero-badge, .hero h1, .hero p, .hero-actions, .hero-stats').forEach(el => {
+      el.classList.add('fade-up');
+      observer.observe(el);
+    });
+
+    console.log('🚀 DEV Token — Built by devs, for devs.');
+  </script>
 </body>
 </html>
